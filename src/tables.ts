@@ -1,4 +1,4 @@
-import Turnish, { TurnishOptions, Rule, isCodeBlock } from "turnish";
+import Turnish, { TurnishOptions, Rule, isCodeBlock, NodeTypes } from "turnish";
 
 var indexOf = Array.prototype.indexOf
 var every = Array.prototype.every
@@ -17,7 +17,7 @@ var alignMap: Record<TableAlignment, string> = {
 const tableShouldBeSkippedCache_ = new WeakMap();
 
 function getAlignment(node: Node): TableAlignment | null {
-  if (node.nodeType !== Node.ELEMENT_NODE) {
+  if (node.nodeType !== NodeTypes.Element) {
     return null;
   }
   const element = node as Element;
