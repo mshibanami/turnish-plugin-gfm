@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import type { UserConfigExport } from 'vite';
 import path from 'path';
@@ -42,6 +43,10 @@ const config: UserConfigExport = defineConfig({
         alias: {
             '@': path.resolve(__dirname, './src'),
         },
+    },
+    test: {
+        environment: 'jsdom',
+        include: ['test/**/*.test.ts'],
     },
 });
 

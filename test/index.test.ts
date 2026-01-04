@@ -1,0 +1,252 @@
+import { describe, it, expect } from 'vitest';
+import Turnish from 'turnish';
+import { gfm } from '../src/index';
+
+// Helper function to create a turndown service with GFM plugin
+function createTurnishService(): Turnish {
+  const turndownService = new Turnish();
+  turndownService.use(gfm);
+  return turndownService;
+}
+
+// Helper function to convert HTML to Markdown
+function htmlToMarkdown(html: string): string {
+  const turnish = createTurnishService();
+  return turnish.render(html);
+}
+
+describe('Strikethrough', () => {
+  it('should convert <strike> to ~~text~~', () => {
+    const input = '<strike>Lorem ipsum</strike>';
+    const expected = '~~Lorem ipsum~~';
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should convert <s> to ~~text~~', () => {
+    const input = '<s>Lorem ipsum</s>';
+    const expected = '~~Lorem ipsum~~';
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should convert <del> to ~~text~~', () => {
+    const input = '<del>Lorem ipsum</del>';
+    const expected = '~~Lorem ipsum~~';
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+});
+
+describe('Task List Items', () => {
+  it('should convert unchecked checkbox inputs', () => {
+    const input = '<ul><li><input type=checkbox>Check Me!</li></ul>';
+    const expected = '*   [ ] Check Me!';
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should convert checked checkbox inputs', () => {
+    const input = '<ul><li><input type=checkbox checked>Checked!</li></ul>';
+    const expected = '*   [x] Checked!';
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+});
+
+describe('Tables', () => {
+  it('should convert a basic table', () => {
+    const input = `
+      <table>
+        <thead>
+          <tr>
+            <th>Column 1</th>
+            <th>Column 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Row 1, Column 1</td>
+            <td>Row 1, Column 2</td>
+          </tr>
+          <tr>
+            <td>Row 2, Column 1</td>
+            <td>Row 2, Column 2</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    const expected = `| Column 1 | Column 2 |
+| --- | --- |
+| Row 1, Column 1 | Row 1, Column 2 |
+| Row 2, Column 1 | Row 2, Column 2 |`;
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should handle cell alignment', () => {
+    const input = `
+      <table>
+        <thead>
+          <tr>
+            <th align="left">Column 1</th>
+            <th align="center">Column 2</th>
+            <th align="right">Column 3</th>
+            <th align="foo">Column 4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Row 1, Column 1</td>
+            <td>Row 1, Column 2</td>
+            <td>Row 1, Column 3</td>
+            <td>Row 1, Column 4</td>
+          </tr>
+          <tr>
+            <td>Row 2, Column 1</td>
+            <td>Row 2, Column 2</td>
+            <td>Row 2, Column 3</td>
+            <td>Row 2, Column 4</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    const expected = `| Column 1 | Column 2 | Column 3 | Column 4 |
+| :--- | :---: | ---: | --- |
+| Row 1, Column 1 | Row 1, Column 2 | Row 1, Column 3 | Row 1, Column 4 |
+| Row 2, Column 1 | Row 2, Column 2 | Row 2, Column 3 | Row 2, Column 4 |`;
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should handle th in first row', () => {
+    const input = `
+      <table>
+        <tr>
+          <th>Heading</th>
+        </tr>
+        <tr>
+          <td>Content</td>
+        </tr>
+      </table>
+    `;
+    const expected = `| Heading |
+| --- |
+| Content |`;
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should handle th first row in tbody', () => {
+    const input = `
+      <table>
+        <tbody>
+          <tr>
+            <th>Heading</th>
+          </tr>
+          <tr>
+            <td>Content</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    const expected = `| Heading |
+| --- |
+| Content |`;
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should handle table with two tbodies', () => {
+    const input = `
+      <table>
+        <tbody>
+          <tr>
+            <th>Heading</th>
+          </tr>
+          <tr>
+            <td>Content</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th>Heading</th>
+          </tr>
+          <tr>
+            <td>Content</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    const expected = `| Heading |
+| --- |
+| Content |
+| Heading |
+| Content |`;
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should handle heading cells in both thead and tbody', () => {
+    const input = `
+      <table>
+        <thead><tr><th>Heading</th></tr></thead>
+        <tbody><tr><th>Cell</th></tr></tbody>
+      </table>
+    `;
+    const expected = `| Heading |
+| --- |
+| Cell |`;
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should handle non-definitive heading row (converted but with empty header)', () => {
+    const input = `
+      <table>
+        <tr><td>Row 1 Cell 1</td><td>Row 1 Cell 2</td></tr>
+        <tr><td>Row 2 Cell 1</td><td>Row 2 Cell 2</td></tr>
+      </table>
+    `;
+    const expected = `|     |     |
+| --- | --- |
+| Row 1 Cell 1 | Row 1 Cell 2 |
+| Row 2 Cell 1 | Row 2 Cell 2 |`;
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should handle non-definitive heading row with th (converted but with empty header)', () => {
+    const input = `
+      <table>
+        <tr>
+          <th>Heading</th>
+          <td>Not a heading</td>
+        </tr>
+        <tr>
+          <td>Heading</td>
+          <td>Not a heading</td>
+        </tr>
+      </table>
+    `;
+    const expected = `|     |     |
+| --- | --- |
+| Heading | Not a heading |
+| Heading | Not a heading |`;
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+});
+
+describe('Highlighted Code Blocks', () => {
+  it('should convert highlighted code block with html', () => {
+    const input = `
+      <div class="highlight highlight-text-html-basic">
+        <pre>&lt;<span class="pl-ent">p</span>&gt;Hello world&lt;/<span class="pl-ent">p</span>&gt;</pre>
+      </div>
+    `;
+    const expected = `\`\`\`html
+<p>Hello world</p>
+\`\`\``;
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+
+  it('should convert highlighted code block with js', () => {
+    const input = `
+      <div class="highlight highlight-source-js">
+        <pre>;(<span class="pl-k">function</span> () {})()</pre>
+      </div>
+    `;
+    const expected = `\`\`\`js
+;(function () {})()
+\`\`\``;
+    expect(htmlToMarkdown(input)).toBe(expected);
+  });
+});
