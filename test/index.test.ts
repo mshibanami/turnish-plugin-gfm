@@ -38,13 +38,13 @@ describe('Strikethrough', () => {
 describe('Task List Items', () => {
   it('should convert unchecked checkbox inputs', () => {
     const input = '<ul><li><input type=checkbox>Check Me!</li></ul>';
-    const expected = '*   [ ] Check Me!';
+    const expected = '- [ ] Check Me!';
     expect(htmlToMarkdown(input)).toBe(expected);
   });
 
   it('should convert checked checkbox inputs', () => {
     const input = '<ul><li><input type=checkbox checked>Checked!</li></ul>';
-    const expected = '*   [x] Checked!';
+    const expected = '- [x] Checked!';
     expect(htmlToMarkdown(input)).toBe(expected);
   });
 });
