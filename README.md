@@ -82,8 +82,8 @@ turndownService.use(tables)
 
 [MIT](LICENSE)
 
-* Copyright (c) 2026- Manabu Nakazawa
-* Copyright (c) 2025-2026 Laurent22
-* Copyright (c) 2017-2025 Dom Christie
+- Copyright (c) 2026- Manabu Nakazawa
+- Copyright (c) 2025-2026 Laurent22
+- Copyright (c) 2017-2025 Dom Christie
 
 This is originally based on [@joplin/turndown-plugin-gfm](https://github.com/laurent22/joplin/tree/dev/packages/turndown-plugin-gfm) (commit: `0538bf0`) by [Laurent22](https://github.com/laurent22), which is a fork of [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) by [Dom Christie](https://github.com/domchristie). All of them are licensed under the MIT License.
