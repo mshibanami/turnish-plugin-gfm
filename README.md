@@ -5,7 +5,7 @@
 
 A [Turnish](https://github.com/mshibanami/turnish) plugin which adds GitHub Flavored Markdown extensions.
 
-This is originally based on [@joplin/turndown-plugin-gfm](https://github.com/laurent22/joplin/tree/dev/packages/turndown-plugin-gfm) by [Laurent22](https://github.com/laurent22), which is a fork of [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) by [Dom Christie](https://github.com/domchristie).
+This is originally based on [@joplin/turndown-plugin-gfm](https://github.com/laurent22/joplin/tree/dev/packages/turndown-plugin-gfm) by [Laurent Cozic](https://github.com/laurent22), which is a fork of [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) by [Dom Christie](https://github.com/domchristie).
 
 ## turnish-plugin-gfm vs @joplin/turndown-plugin-gfm
 
@@ -86,4 +86,4 @@ turndownService.use(tables)
 - Copyright (c) 2025-2026 Laurent22
 - Copyright (c) 2017-2025 Dom Christie
 
-This is originally based on [@joplin/turndown-plugin-gfm](https://github.com/laurent22/joplin/tree/dev/packages/turndown-plugin-gfm) (commit: `0538bf0`) by [Laurent22](https://github.com/laurent22), which is a fork of [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) by [Dom Christie](https://github.com/domchristie). All of them are licensed under the MIT License.
+This is originally based on [@joplin/turndown-plugin-gfm](https://github.com/laurent22/joplin/tree/dev/packages/turndown-plugin-gfm) (commit: `0538bf0`) by [Laurent Cozic](https://github.com/laurent22), which is a fork of [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) by [Dom Christie](https://github.com/domchristie). All of them are licensed under the MIT License.
