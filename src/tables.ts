@@ -11,7 +11,7 @@ var alignMap: Record<TableAlignment, string> = {
   center: ':---:'
 };
 
-let isCodeBlock_: ((node: any) => boolean) | null = null;
+let isCodeBlock_: ((node: Node) => boolean) | null = null;
 let options_: TurnishOptions | null = null;
 
 // We need to cache the result of tableShouldBeSkipped() as it is expensive.
@@ -19,10 +19,23 @@ let options_: TurnishOptions | null = null;
 // Fixes https://github.com/laurent22/joplin/issues/6736
 const tableShouldBeSkippedCache_ = new WeakMap();
 
-function getAlignment(node: any): TableAlignment | null {
-  return (node && node.getAttribute)
-    ? (node.getAttribute('align') || node.style.textAlign || '').toLowerCase()
-    : null;
+function getAlignment(node: Node): TableAlignment | null {
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return null;
+  }
+  const element = node as Element;
+  const align = (
+    element.getAttribute('align')
+    || (
+      "style" in element
+        ? (element as HTMLElement).style.textAlign
+        : null
+    )
+  )?.toLowerCase();
+  if (align && align in alignMap) {
+    return align as TableAlignment;
+  }
+  return null;
 }
 
 function getBorder(alignment: TableAlignment | '') {
@@ -112,7 +125,9 @@ rules.table = {
         return html
       }
     } else {
-      if (tableShouldBeSkipped(node)) return content;
+      if (tableShouldBeSkipped(node)) {
+        return content;
+      }
 
       // Ensure there are no blank lines
       content = content.replace(/\n+/g, '\n')
