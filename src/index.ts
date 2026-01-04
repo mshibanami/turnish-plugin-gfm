@@ -1,10 +1,11 @@
+import Turnish from 'turnish'
 import highlightedCodeBlock from './highlighted-code-block'
 import strikethrough from './strikethrough'
 import tables from './tables'
 import taskListItems from './task-list-items'
 
-function gfm(turndownService: any) {
-  turndownService.use([
+function gfm(turnish: Turnish) {
+  turnish.use([
     highlightedCodeBlock,
     strikethrough,
     tables,

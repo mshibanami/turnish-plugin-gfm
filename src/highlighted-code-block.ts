@@ -1,7 +1,9 @@
-var highlightRegExp = /highlight-(?:text|source)-([a-z0-9]+)/
+import Turnish, { TurnishOptions } from 'turnish';
 
-export default function highlightedCodeBlock(turndownService: any) {
-  turndownService.addRule('highlightedCodeBlock', {
+const highlightRegExp = /highlight-(?:text|source)-([a-z0-9]+)/
+
+export default function highlightedCodeBlock(turnish: Turnish) {
+  turnish.addRule('highlightedCodeBlock', {
     filter: function (node: any) {
       var firstChild = node.firstChild
       return (
@@ -11,7 +13,7 @@ export default function highlightedCodeBlock(turndownService: any) {
         firstChild.nodeName === 'PRE'
       )
     },
-    replacement: function (content: any, node: any, options: any) {
+    replacement: (content: string, node: any, options: TurnishOptions) => {
       var className = node.className || ''
       var language = (className.match(highlightRegExp) || [null, ''])[1]
 
