@@ -1,42 +1,54 @@
+import Turnish, { TurnishOptions, Rule } from "turnish";
+
 var indexOf = Array.prototype.indexOf
 var every = Array.prototype.every
-var rules: any = {}
-var alignMap = { left: ':---', right: '---:', center: ':---:' };
+var rules: Record<string, Rule> = {}
+type TableAlignment = 'left' | 'right' | 'center';
 
-let isCodeBlock_ = null;
-let options_ = null;
+var alignMap: Record<TableAlignment, string> = {
+  left: ':---',
+  right: '---:',
+  center: ':---:'
+};
+
+let isCodeBlock_: ((node: any) => boolean) | null = null;
+let options_: TurnishOptions | null = null;
 
 // We need to cache the result of tableShouldBeSkipped() as it is expensive.
 // Caching it means we went from about 9000 ms for rendering down to 90 ms.
 // Fixes https://github.com/laurent22/joplin/issues/6736
 const tableShouldBeSkippedCache_ = new WeakMap();
 
-function getAlignment(node: any) {
-  return node ? (node.getAttribute('align') || node.style.textAlign || '').toLowerCase() : '';
+function getAlignment(node: any): TableAlignment | null {
+  return (node && node.getAttribute)
+    ? (node.getAttribute('align') || node.style.textAlign || '').toLowerCase()
+    : null;
 }
 
-function getBorder(alignment: any) {
+function getBorder(alignment: TableAlignment | '') {
   return alignment ? alignMap[alignment] : '---';
 }
 
-function getColumnAlignment(table: any, columnIndex: any) {
-  var votes = {
+function getColumnAlignment(table: any, columnIndex: number): TableAlignment | '' {
+  const votes: Record<string, number> = {
     left: 0,
     right: 0,
     center: 0,
-    '': 0,
   };
 
-  var align = '';
+  let align: TableAlignment | '' = '';
 
-  for (var i = 0; i < table.rows.length; ++i) {
-    var row = table.rows[i];
+  for (let i = 0; i < table.rows.length; ++i) {
+    const row = table.rows[i];
     if (columnIndex < row.childNodes.length) {
-      var cellAlignment = getAlignment(row.childNodes[columnIndex]);
-      ++votes[cellAlignment];
+      const cellAlignment = getAlignment(row.childNodes[columnIndex]);
+      if (cellAlignment && Object.prototype.hasOwnProperty.call(votes, cellAlignment)) {
+        votes[cellAlignment]++;
 
-      if (votes[cellAlignment] > votes[align]) {
-        align = cellAlignment;
+        const currentVotes = align ? votes[align] : 0;
+        if (votes[cellAlignment] > currentVotes) {
+          align = cellAlignment as TableAlignment | '';
+        }
       }
     }
   }
@@ -48,7 +60,7 @@ rules.tableCell = {
   filter: ['th', 'td'],
   replacement: function (content: any, node: any) {
     if (tableShouldBeSkipped(nodeParentTable(node))) return content;
-    return cell(content, node)
+    return cell(content, node, null);
   }
 }
 
@@ -73,14 +85,14 @@ rules.tableRow = {
 }
 
 rules.table = {
-  filter: function (node, options) {
+  filter: function (node: any, options: TurnishOptions) {
     return node.nodeName === 'TABLE';
   },
 
   replacement: function (content: any, node: any) {
     // Only convert tables that can result in valid Markdown
     // Other tables are kept as HTML using `keep` (see below).
-    if (tableShouldBeHtml(node, options_)) {
+    if (options_ && tableShouldBeHtml(node, options_)) {
       let html = node.outerHTML;
       let divParent = nodeParentDiv(node)
       // Make table in HTML format horizontally scrollable by give table a div parent, so the width of the table is limited to the screen width.
@@ -149,7 +161,7 @@ rules.tableSection = {
 // - or if its the first child of the TABLE or the first TBODY (possibly
 //   following a blank THEAD)
 // - and every cell is a TH
-function isHeadingRow(tr) {
+function isHeadingRow(tr: any): boolean {
   var parentNode = tr.parentNode
   return (
     parentNode.nodeName === 'THEAD' ||
@@ -161,7 +173,7 @@ function isHeadingRow(tr) {
   )
 }
 
-function isFirstTbody(element) {
+function isFirstTbody(element: any) {
   var previousSibling = element.previousSibling
   return (
     element.nodeName === 'TBODY' && (
@@ -174,10 +186,11 @@ function isFirstTbody(element) {
   )
 }
 
-function cell(content, node = null, index = null) {
-  if (index === null) index = indexOf.call(node.parentNode.childNodes, node)
-  var prefix = ' '
-  if (index === 0) prefix = '| '
+function cell(content: string, node: any, index: number | null) {
+  if (index === null) {
+    index = indexOf.call(node.parentNode.childNodes, node);
+  }
+  let prefix = index === 0 ? '| ' : ' ';
   let filteredContent = content.trim().replace(/\n\r/g, '<br>').replace(/\n/g, "<br>");
   filteredContent = filteredContent.replace(/\|+/g, '\\|')
   while (filteredContent.length < 3) filteredContent += ' ';
@@ -185,31 +198,40 @@ function cell(content, node = null, index = null) {
   return prefix + filteredContent + ' |'
 }
 
-function nodeContainsTable(node) {
-  if (!node.childNodes) return false;
-
+function nodeContainsTable(node: any) {
+  if (!node.childNodes) {
+    return false;
+  }
   for (let i = 0; i < node.childNodes.length; i++) {
     const child = node.childNodes[i];
-    if (child.nodeName === 'TABLE') return true;
-    if (nodeContainsTable(child)) return true;
+    if (child.nodeName === 'TABLE'
+      || nodeContainsTable(child)) {
+      return true;
+    }
   }
   return false;
 }
 
-const nodeContains = (node, types) => {
-  if (!node.childNodes) return false;
-
+const nodeContains = (node: any, types: string | string[]) => {
+  if (!node.childNodes) {
+    return false;
+  }
   for (let i = 0; i < node.childNodes.length; i++) {
     const child = node.childNodes[i];
-    if (types === 'code' && isCodeBlock_ && isCodeBlock_(child)) return true;
-    if (types.includes(child.nodeName)) return true;
-    if (nodeContains(child, types)) return true;
+    if (types === 'code' && isCodeBlock_ && isCodeBlock_(child)) {
+      return true;
+    }
+    if (types.includes(child.nodeName)) {
+      return true;
+    }
+    if (nodeContains(child, types)) {
+      return true;
+    }
   }
-
   return false;
 }
 
-const tableShouldBeHtml = (tableNode, options) => {
+const tableShouldBeHtml = (tableNode: any, options: TurnishOptions) => {
   const possibleTags = [
     'UL',
     'OL',
@@ -236,34 +258,39 @@ const tableShouldBeHtml = (tableNode, options) => {
 
 // Various conditions under which a table should be skipped - i.e. each cell
 // will be rendered one after the other as if they were paragraphs.
-function tableShouldBeSkipped(tableNode) {
+function tableShouldBeSkipped(tableNode: any) {
   const cached = tableShouldBeSkippedCache_.get(tableNode);
-  if (cached !== undefined) return cached;
-
+  if (cached !== undefined) {
+    return cached;
+  }
   const result = tableShouldBeSkipped_(tableNode);
-
   tableShouldBeSkippedCache_.set(tableNode, result);
   return result;
 }
 
-function tableShouldBeSkipped_(tableNode) {
-  if (!tableNode) return true;
-  if (!tableNode.rows) return true;
-  if (tableNode.rows.length === 1 && tableNode.rows[0].childNodes.length <= 1) return true; // Table with only one cell
-  if (nodeContainsTable(tableNode)) return true;
+function tableShouldBeSkipped_(tableNode: any) {
+  if (!tableNode
+    || !tableNode.rows
+    || (tableNode.rows.length === 1 && tableNode.rows[0].childNodes.length <= 1) // Table with only one cell
+    || nodeContainsTable(tableNode)
+  ) {
+    return true;
+  }
   return false;
 }
 
-function nodeParentDiv(node) {
+function nodeParentDiv(node: any) {
   let parent = node.parentNode;
   while (parent.nodeName !== 'DIV') {
     parent = parent.parentNode;
-    if (!parent) return null;
+    if (!parent) {
+      return null;
+    }
   }
   return parent;
 }
 
-function nodeParentTable(node) {
+function nodeParentTable(node: any) {
   let parent = node.parentNode;
   while (parent.nodeName !== 'TABLE') {
     parent = parent.parentNode;
@@ -272,7 +299,7 @@ function nodeParentTable(node) {
   return parent;
 }
 
-function handleColSpan(content, node, emptyChar) {
+function handleColSpan(content: string, node: any, emptyChar: string) {
   const colspan = node.getAttribute('colspan') || 1;
   for (let i = 1; i < colspan; i++) {
     content += ' | ' + emptyChar.repeat(3);
@@ -280,7 +307,7 @@ function handleColSpan(content, node, emptyChar) {
   return content
 }
 
-function tableColCount(node) {
+function tableColCount(node: any) {
   let maxColCount = 0;
   for (let i = 0; i < node.rows.length; i++) {
     const row = node.rows[i]
@@ -290,13 +317,17 @@ function tableColCount(node) {
   return maxColCount
 }
 
-export default function tables(turndownService: any) {
-  isCodeBlock_ = turndownService.isCodeBlock;
-  options_ = turndownService.options;
+export default function tables(turnish: Turnish) {
+  isCodeBlock_ = turnish.isCodeBlock;
+  options_ = turnish.options;
 
-  turndownService.keep(function (node) {
-    if (node.nodeName === 'TABLE' && tableShouldBeHtml(node, turndownService.options)) return true;
+  turnish.keep((node: any) => {
+    if (node.nodeName === 'TABLE' && tableShouldBeHtml(node, turnish.options)) {
+      return true;
+    }
     return false;
   });
-  for (var key in rules) turndownService.addRule(key, rules[key])
+  for (var key in rules) {
+    turnish.addRule(key, rules[key]);
+  }
 }

@@ -15,8 +15,8 @@ importers:
         specifier: ^27.4.0
         version: 27.4.0
       turnish:
-        specifier: ^1.5.0
-        version: 1.5.0
+        specifier: ^1.6.1
+        version: 1.6.1
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -34,6 +34,9 @@ packages:
 
   '@acemir/cssom@0.9.30':
     resolution: {integrity: sha512-9CnlMCI0LmCIq0olalQqdWrJHPzm0/tw3gzOA9zJSgvFX7Xau3D24mAGa4BtwxwY69nsuJW6kQqqCzf/mEcQgg==}
+
+  '@adobe/css-tools@4.4.4':
+    resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
 
   '@asamuzakjp/css-color@4.1.1':
     resolution: {integrity: sha512-B0Hv6G3gWGMn0xKJ0txEi/jM5iFpT3MfDxmhZFb4W047GvytCf1DHQ1D69W3zHI4yWe2aTZAA0JnbMZ7Xc8DuQ==}
@@ -890,8 +893,8 @@ packages:
     resolution: {integrity: sha512-bLVMLPtstlZ4iMQHpFHTR7GAGj2jxi8Dg0s2h2MafAE4uSWF98FC/3MomU51iQAMf8/qDUbKWf5GxuvvVcXEhw==}
     engines: {node: '>=20'}
 
-  turnish@1.5.0:
-    resolution: {integrity: sha512-2wHfeyTq1pkj9SbgHaM9pDklQ9J63VihuouvlKd5iF8RJHPV+TyMu04I8CiFzDQFG1IIh5MaU8G1wjZ/B+AFjw==}
+  turnish@1.6.1:
+    resolution: {integrity: sha512-rq+UD+60NYgwOgQsB/lx36cCxCuRj8GDciLA/oKMM55IryKMbeLFRheR+4cV9CF9z5wCNh37JshYUgyDikqfhA==}
 
   typescript@5.8.2:
     resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}
@@ -1048,6 +1051,8 @@ packages:
 snapshots:
 
   '@acemir/cssom@0.9.30': {}
+
+  '@adobe/css-tools@4.4.4': {}
 
   '@asamuzakjp/css-color@4.1.1':
     dependencies:
@@ -1833,8 +1838,9 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  turnish@1.5.0:
+  turnish@1.6.1:
     dependencies:
+      '@adobe/css-tools': 4.4.4
       '@mixmark-io/domino': 2.2.0
 
   typescript@5.8.2: {}
