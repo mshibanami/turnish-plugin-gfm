@@ -3,7 +3,7 @@ import strikethrough from './strikethrough'
 import tables from './tables'
 import taskListItems from './task-list-items'
 
-function gfm (turndownService) {
+function gfm(turndownService: any) {
   turndownService.use([
     highlightedCodeBlock,
     strikethrough,

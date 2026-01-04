@@ -1,8 +1,8 @@
 var highlightRegExp = /highlight-(?:text|source)-([a-z0-9]+)/
 
-export default function highlightedCodeBlock (turndownService) {
+export default function highlightedCodeBlock(turndownService: any) {
   turndownService.addRule('highlightedCodeBlock', {
-    filter: function (node) {
+    filter: function (node: any) {
       var firstChild = node.firstChild
       return (
         node.nodeName === 'DIV' &&
@@ -11,7 +11,7 @@ export default function highlightedCodeBlock (turndownService) {
         firstChild.nodeName === 'PRE'
       )
     },
-    replacement: function (content, node, options) {
+    replacement: function (content: any, node: any, options: any) {
       var className = node.className || ''
       var language = (className.match(highlightRegExp) || [null, ''])[1]
 

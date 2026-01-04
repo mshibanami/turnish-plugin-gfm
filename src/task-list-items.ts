@@ -1,6 +1,6 @@
-export default function taskListItems (turndownService) {
+export default function taskListItems(turndownService: any) {
   turndownService.addRule('taskListItems', {
-    filter: function (node) {
+    filter: function (node: any) {
       const parent = node.parentNode;
       const grandparent = parent.parentNode;
       const grandparentIsListItem = !!grandparent && grandparent.nodeName === 'LI';
@@ -14,7 +14,7 @@ export default function taskListItems (turndownService) {
         || (parent.nodeName === 'SPAN' && grandparentIsListItem)
       )
     },
-    replacement: function (content, node) {
+    replacement: function (content: any, node: any) {
       const checked = node.nodeName === 'INPUT' ? node.checked : node.getAttribute('aria-checked') === 'true';
       return (checked ? '[x]' : '[ ]') + ' '
     }

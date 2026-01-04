@@ -1,6 +1,6 @@
 var indexOf = Array.prototype.indexOf
 var every = Array.prototype.every
-var rules = {}
+var rules: any = {}
 var alignMap = { left: ':---', right: '---:', center: ':---:' };
 
 let isCodeBlock_ = null;
@@ -11,15 +11,15 @@ let options_ = null;
 // Fixes https://github.com/laurent22/joplin/issues/6736
 const tableShouldBeSkippedCache_ = new WeakMap();
 
-function getAlignment(node) {
+function getAlignment(node: any) {
   return node ? (node.getAttribute('align') || node.style.textAlign || '').toLowerCase() : '';
 }
 
-function getBorder(alignment) {
+function getBorder(alignment: any) {
   return alignment ? alignMap[alignment] : '---';
 }
 
-function getColumnAlignment(table, columnIndex) {
+function getColumnAlignment(table: any, columnIndex: any) {
   var votes = {
     left: 0,
     right: 0,
@@ -46,7 +46,7 @@ function getColumnAlignment(table, columnIndex) {
 
 rules.tableCell = {
   filter: ['th', 'td'],
-  replacement: function (content, node) {
+  replacement: function (content: any, node: any) {
     if (tableShouldBeSkipped(nodeParentTable(node))) return content;
     return cell(content, node)
   }
@@ -54,7 +54,7 @@ rules.tableCell = {
 
 rules.tableRow = {
   filter: 'tr',
-  replacement: function (content, node) {
+  replacement: function (content: any, node: any) {
     const parentTable = nodeParentTable(node);
     if (tableShouldBeSkipped(parentTable)) return content;
 
@@ -77,14 +77,14 @@ rules.table = {
     return node.nodeName === 'TABLE';
   },
 
-  replacement: function (content, node) {
+  replacement: function (content: any, node: any) {
     // Only convert tables that can result in valid Markdown
     // Other tables are kept as HTML using `keep` (see below).
     if (tableShouldBeHtml(node, options_)) {
       let html = node.outerHTML;
       let divParent = nodeParentDiv(node)
       // Make table in HTML format horizontally scrollable by give table a div parent, so the width of the table is limited to the screen width.
-	    // see https://github.com/laurent22/joplin/pull/10161
+      // see https://github.com/laurent22/joplin/pull/10161
       // test cases:
       // packages/app-cli/tests/html_to_md/preserve_nested_tables.html
       // packages/app-cli/tests/html_to_md/table_with_blockquote.html
@@ -94,7 +94,7 @@ rules.table = {
       // packages/app-cli/tests/html_to_md/table_with_heading.html
       // packages/app-cli/tests/html_to_md/table_with_hr.html
       // packages/app-cli/tests/html_to_md/table_with_list.html
-      if (divParent === null || !divParent.classList.contains('joplin-table-wrapper')){
+      if (divParent === null || !divParent.classList.contains('joplin-table-wrapper')) {
         return `\n\n<div class="joplin-table-wrapper">${html}</div>\n\n`;
       } else {
         return html
@@ -139,7 +139,7 @@ rules.tableColgroup = {
 
 rules.tableSection = {
   filter: ['thead', 'tbody', 'tfoot'],
-  replacement: function (content) {
+  replacement: function (content: any) {
     return content
   }
 }
@@ -149,7 +149,7 @@ rules.tableSection = {
 // - or if its the first child of the TABLE or the first TBODY (possibly
 //   following a blank THEAD)
 // - and every cell is a TH
-function isHeadingRow (tr) {
+function isHeadingRow(tr) {
   var parentNode = tr.parentNode
   return (
     parentNode.nodeName === 'THEAD' ||
@@ -161,7 +161,7 @@ function isHeadingRow (tr) {
   )
 }
 
-function isFirstTbody (element) {
+function isFirstTbody(element) {
   var previousSibling = element.previousSibling
   return (
     element.nodeName === 'TBODY' && (
@@ -174,7 +174,7 @@ function isFirstTbody (element) {
   )
 }
 
-function cell (content, node = null, index = null) {
+function cell(content, node = null, index = null) {
   if (index === null) index = indexOf.call(node.parentNode.childNodes, node)
   var prefix = ' '
   if (index === 0) prefix = '| '
@@ -290,7 +290,7 @@ function tableColCount(node) {
   return maxColCount
 }
 
-export default function tables (turndownService) {
+export default function tables(turndownService: any) {
   isCodeBlock_ = turndownService.isCodeBlock;
   options_ = turndownService.options;
 
