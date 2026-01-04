@@ -1,4 +1,4 @@
-import Turnish, { TurnishOptions, Rule } from "turnish";
+import Turnish, { TurnishOptions, Rule, isCodeBlock } from "turnish";
 
 var indexOf = Array.prototype.indexOf
 var every = Array.prototype.every
@@ -10,9 +10,6 @@ var alignMap: Record<TableAlignment, string> = {
   right: '---:',
   center: ':---:'
 };
-
-let isCodeBlock_: ((node: Node) => boolean) | null = null;
-let options_: TurnishOptions | null = null;
 
 // We need to cache the result of tableShouldBeSkipped() as it is expensive.
 // Caching it means we went from about 9000 ms for rendering down to 90 ms.
@@ -102,10 +99,10 @@ rules.table = {
     return node.nodeName === 'TABLE';
   },
 
-  replacement: function (content: any, node: any) {
+  replacement: function (content: any, node: any, options: TurnishOptions) {
     // Only convert tables that can result in valid Markdown
     // Other tables are kept as HTML using `keep` (see below).
-    if (options_ && tableShouldBeHtml(node, options_)) {
+    if (tableShouldBeHtml(node, options)) {
       let html = node.outerHTML;
       let divParent = nodeParentDiv(node)
       // Make table in HTML format horizontally scrollable by give table a div parent, so the width of the table is limited to the screen width.
@@ -119,8 +116,8 @@ rules.table = {
       // packages/app-cli/tests/html_to_md/table_with_heading.html
       // packages/app-cli/tests/html_to_md/table_with_hr.html
       // packages/app-cli/tests/html_to_md/table_with_list.html
-      if (divParent === null || !divParent.classList.contains('joplin-table-wrapper')) {
-        return `\n\n<div class="joplin-table-wrapper">${html}</div>\n\n`;
+      if (divParent === null || !divParent.classList.contains('turnish-complex-table-wrapper')) {
+        return `\n\n<div class="turnish-complex-table-wrapper">${html}</div>\n\n`;
       } else {
         return html
       }
@@ -233,7 +230,7 @@ const nodeContains = (node: any, types: string | string[]) => {
   }
   for (let i = 0; i < node.childNodes.length; i++) {
     const child = node.childNodes[i];
-    if (types === 'code' && isCodeBlock_ && isCodeBlock_(child)) {
+    if (types === 'code' && isCodeBlock(child)) {
       return true;
     }
     if (types.includes(child.nodeName)) {
@@ -333,9 +330,6 @@ function tableColCount(node: any) {
 }
 
 export default function tables(turnish: Turnish) {
-  isCodeBlock_ = turnish.isCodeBlock;
-  options_ = turnish.options;
-
   turnish.keep((node: any) => {
     if (node.nodeName === 'TABLE' && tableShouldBeHtml(node, turnish.options)) {
       return true;

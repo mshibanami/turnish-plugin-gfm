@@ -225,6 +225,166 @@ describe('Tables', () => {
   });
 });
 
+describe('Tables kept as HTML (turnish-complex-table-wrapper)', () => {
+  it('should keep table with code block as HTML', () => {
+    const input = `
+      <table>
+        <tr>
+          <th>Code</th>
+        </tr>
+        <tr>
+          <td><pre><code>console.log('hello');</code></pre></td>
+        </tr>
+      </table>
+    `;
+    const result = htmlToMarkdown(input);
+    expect(result).toContain('<div class="turnish-complex-table-wrapper">');
+    expect(result).toContain('<table>');
+  });
+
+  it('should keep table with unordered list as HTML', () => {
+    const input = `
+      <table>
+        <tr>
+          <th>Items</th>
+        </tr>
+        <tr>
+          <td><ul><li>Item 1</li><li>Item 2</li></ul></td>
+        </tr>
+      </table>
+    `;
+    const result = htmlToMarkdown(input);
+    expect(result).toContain('<div class="turnish-complex-table-wrapper">');
+    expect(result).toContain('<table>');
+  });
+
+  it('should keep table with ordered list as HTML', () => {
+    const input = `
+      <table>
+        <tr>
+          <th>Steps</th>
+        </tr>
+        <tr>
+          <td><ol><li>Step 1</li><li>Step 2</li></ol></td>
+        </tr>
+      </table>
+    `;
+    const result = htmlToMarkdown(input);
+    expect(result).toContain('<div class="turnish-complex-table-wrapper">');
+    expect(result).toContain('<table>');
+  });
+
+  it('should keep table with heading as HTML', () => {
+    const input = `
+      <table>
+        <tr>
+          <th>Content</th>
+        </tr>
+        <tr>
+          <td><h2>Section Title</h2></td>
+        </tr>
+      </table>
+    `;
+    const result = htmlToMarkdown(input);
+    expect(result).toContain('<div class="turnish-complex-table-wrapper">');
+    expect(result).toContain('<table>');
+  });
+
+  it('should keep table with blockquote as HTML', () => {
+    const input = `
+      <table>
+        <tr>
+          <th>Quote</th>
+        </tr>
+        <tr>
+          <td><blockquote>Famous quote here</blockquote></td>
+        </tr>
+      </table>
+    `;
+    const result = htmlToMarkdown(input);
+    expect(result).toContain('<div class="turnish-complex-table-wrapper">');
+    expect(result).toContain('<table>');
+  });
+
+  it('should keep table with horizontal rule as HTML', () => {
+    const input = `
+      <table>
+        <tr>
+          <th>Content</th>
+        </tr>
+        <tr>
+          <td>Before<hr>After</td>
+        </tr>
+      </table>
+    `;
+    const result = htmlToMarkdown(input);
+    expect(result).toContain('<div class="turnish-complex-table-wrapper">');
+    expect(result).toContain('<table>');
+  });
+
+  it('should keep nested table as HTML when preserveNestedTables is true', () => {
+    const turnish = new Turnish({ preserveNestedTables: true });
+    turnish.use(gfm);
+    const input = `
+      <table>
+        <tr>
+          <th>Outer</th>
+        </tr>
+        <tr>
+          <td>
+            <table>
+              <tr><td>Inner</td></tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    `;
+    const result = turnish.render(input);
+    expect(result).toContain('<div class="turnish-complex-table-wrapper">');
+    expect(result).toContain('<table>');
+  });
+
+  it('should not double-wrap table already in turnish-complex-table-wrapper', () => {
+    const input = `
+      <div class="turnish-complex-table-wrapper">
+        <table>
+          <tr>
+            <th>Content</th>
+          </tr>
+          <tr>
+            <td><ul><li>Item</li></ul></td>
+          </tr>
+        </table>
+      </div>
+    `;
+    const result = htmlToMarkdown(input);
+    // When already wrapped, it should output table HTML without adding another wrapper
+    expect(result).toContain('<table>');
+    // Should NOT have double-wrapped with new turnish-complex-table-wrapper
+    expect(result).not.toContain('<div class="turnish-complex-table-wrapper"><div class="turnish-complex-table-wrapper">');
+  });
+
+  it('should convert simple table to Markdown (not kept as HTML)', () => {
+    const input = `
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>Foo</td>
+          <td>Bar</td>
+        </tr>
+      </table>
+    `;
+    const result = htmlToMarkdown(input);
+    expect(result).not.toContain('<div class="turnish-complex-table-wrapper">');
+    expect(result).toContain('| Name | Value |');
+    expect(result).toContain('| --- | --- |');
+    expect(result).toContain('| Foo | Bar |');
+  });
+});
+
 describe('Highlighted Code Blocks', () => {
   it('should convert highlighted code block with html', () => {
     const input = `

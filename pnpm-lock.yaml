@@ -15,8 +15,8 @@ importers:
         specifier: ^27.4.0
         version: 27.4.0
       turnish:
-        specifier: ^1.6.1
-        version: 1.6.1
+        specifier: ^1.6.2
+        version: 1.6.2
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -893,8 +893,8 @@ packages:
     resolution: {integrity: sha512-bLVMLPtstlZ4iMQHpFHTR7GAGj2jxi8Dg0s2h2MafAE4uSWF98FC/3MomU51iQAMf8/qDUbKWf5GxuvvVcXEhw==}
     engines: {node: '>=20'}
 
-  turnish@1.6.1:
-    resolution: {integrity: sha512-rq+UD+60NYgwOgQsB/lx36cCxCuRj8GDciLA/oKMM55IryKMbeLFRheR+4cV9CF9z5wCNh37JshYUgyDikqfhA==}
+  turnish@1.6.2:
+    resolution: {integrity: sha512-MepbO8mWHrR6gRISBICr3tQAnOqGg4uYMMZhvtAvw+oSz00J+v9h5jD8fHxrOC+drkLqGtxv1hLMLTzxKp/8EQ==}
 
   typescript@5.8.2:
     resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}
@@ -1838,7 +1838,7 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  turnish@1.6.1:
+  turnish@1.6.2:
     dependencies:
       '@adobe/css-tools': 4.4.4
       '@mixmark-io/domino': 2.2.0
