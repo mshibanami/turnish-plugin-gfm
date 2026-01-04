@@ -1,11 +1,11 @@
 {
-  "name": "@joplin/turndown-plugin-gfm",
-  "description": "Turndown plugin to add GitHub Flavored Markdown extensions.",
+  "name": "turnish-plugin-gfm",
+  "description": "Turnish plugin to add GitHub Flavored Markdown extensions.",
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.64",
-  "author": "Dom Christie",
+  "version": "1.0.0",
+  "author": "Manabu Nakazawa",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/types/index.d.ts",
@@ -34,13 +34,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/laurent22/joplin-turndown-plugin-gfm.git"
+    "url": "https://github.com/mshibanami/turnish-plugin-gfm.git"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "prepare": "npm run build"
-  },
-  "gitHead": "05a29b450962bf05a8642bbd39446a1f679a96ba"
+  }
 }

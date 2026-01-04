@@ -1,39 +1,66 @@
-# turndown-plugin-gfm
+# turnish-plugin-gfm
 
-A [Turndown](https://github.com/domchristie/turndown) plugin which adds GitHub Flavored Markdown extensions.
+A [Turnish](https://github.com/mshibanami/turnish) plugin which adds GitHub Flavored Markdown extensions.
 
-This is a fork of the original [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) for use with [Joplin](https://github.com/laurent22/joplin). The changes are:
+This is originally based on [@joplin/turndown-plugin-gfm](https://github.com/laurent22/joplin/tree/dev/packages/turndown-plugin-gfm) by [Laurent22](https://github.com/laurent22), which is a fork of [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) by [Dom Christie](https://github.com/domchristie).
 
-- New: Always render tables even if they don't have a header.
-- New: Don't render the border of tables that contain other tables (frequent for websites that do the layout using tables). Only render the inner tables, if any, and if they also don't contain other tables.
-- New: Replace newlines (`\n`) with `<br>` inside table cells so that multi-line content is displayed correctly as Markdown.
-- New: Table cells are at least three characters long (padded with spaces) so that they render correctly in GFM-compliant renderers.
-- New: Handle colspan in TD tags
-- Fixed: Ensure there are no blank lines inside tables (due for example to an empty `<tr>` tag)
-- Fixed: Fixed importing tables that contain pipes.
+## turnish-plugin-gfm vs @joplin/turndown-plugin-gfm
+
+0538bf0
 
 ## Installation
 
 npm:
 
+```sh
+npm install turnish-plugin-gfm
 ```
-npm install @joplin/turndown-plugin-gfm
+
+yarn:
+
+```sh
+yarn add turnish-plugin-gfm
+```
+
+pnpm:
+
+```sh
+pnpm add turnish-plugin-gfm
+```
+
+Browser:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/turnish-plugin-gfm@latest/dist/index.iife.js"></script>
 ```
 
 ## Usage
 
-```js
-// For Node.js
-var TurndownService = require('@joplin/turndown')
-var turndownPluginGfm = require('@joplin/turndown-plugin-gfm')
+For Node.js:
 
-var gfm = turndownPluginGfm.gfm
-var turndownService = new TurndownService()
-turndownService.use(gfm)
-var markdown = turndownService.turndown('<strike>Hello world!</strike>')
+```js
+const TurnishService = require('turnish')
+const turnishPluginGfm = require('turnish-plugin-gfm')
+
+const gfm = turnishPluginGfm.gfm
+const turnishService = new TurnishService()
+turnishService.use(gfm)
+const markdown = turnishService.turnish('<strike>Hello world!</strike>')
 ```
 
-turndown-plugin-gfm is a suite of plugins which can be applied individually. The available plugins are as follows:
+ES module import (Node with ESM, bundlers, or browsers supporting modules):
+
+```js
+import TurnishService from 'turnish'
+import turnishPluginGfm from 'turnish-plugin-gfm'
+
+const gfm = turnishPluginGfm.gfm
+const turnishService = new TurnishService()
+turnishService.use(gfm)
+const markdown = turnishService.turnish('<strike>Hello world!</strike>')
+```
+
+turnish-plugin-gfm is a suite of plugins which can be applied individually. The available plugins are as follows:
 
 - `strikethrough` (for converting `<strike>`, `<s>`, and `<del>` elements)
 - `tables`
@@ -43,22 +70,17 @@ turndown-plugin-gfm is a suite of plugins which can be applied individually. The
 So for example, if you only wish to convert tables:
 
 ```js
-var tables = require('@joplin/turndown-plugin-gfm').tables
-var turndownService = new TurndownService()
+const tables = require('turnish-plugin-gfm').tables
+const turndownService = new TurndownService()
 turndownService.use(tables)
-```
-
-### Typescript
-
-To use this in a typescript project, add this to a `declarations.d.ts` file, as described in https://www.npmjs.com/package/@joplin/turndown, and then add:
-
-```ts
-declare module "@joplin/turndown-plugin-gfm" {
-  export const gfm: any;
-  // Add other named exports if necessary
-}
 ```
 
 ## License
 
-turndown-plugin-gfm is copyright © 2017+ Dom Christie and released under the MIT license.
+[MIT](LICENSE)
+
+* Copyright (c) 2026- Manabu Nakazawa
+* Copyright (c) 2025-2026 Laurent22
+* Copyright (c) 2017-2025 Dom Christie
+
+This is originally based on [@joplin/turndown-plugin-gfm](https://github.com/laurent22/joplin/tree/dev/packages/turndown-plugin-gfm) (commit: `0538bf0`) by [Laurent22](https://github.com/laurent22), which is a fork of [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) by [Dom Christie](https://github.com/domchristie). All of them are licensed under the MIT License.
