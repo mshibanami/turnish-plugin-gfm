@@ -1,5 +1,8 @@
 # turnish-plugin-gfm
 
+[![Test](https://github.com/mshibanami/turnish-plugin-gfm/actions/workflows/test.yml/badge.svg)](https://github.com/mshibanami/turnish-plugin-gfm/actions/workflows/test.yml)
+[![NPM version](https://img.shields.io/npm/v/turnish-plugin-gfm.svg?style=flat)](https://www.npmjs.org/package/turnish-plugin-gfm)
+
 A [Turnish](https://github.com/mshibanami/turnish) plugin which adds GitHub Flavored Markdown extensions.
 
 This is originally based on [@joplin/turndown-plugin-gfm](https://github.com/laurent22/joplin/tree/dev/packages/turndown-plugin-gfm) by [Laurent22](https://github.com/laurent22), which is a fork of [turndown-plugin-gfm](https://github.com/domchristie/turndown-plugin-gfm) by [Dom Christie](https://github.com/domchristie).
